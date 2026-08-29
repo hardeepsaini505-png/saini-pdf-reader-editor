@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -20,6 +21,50 @@ class SainiPdfApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Saini PDF Reader & Editor',
+
+      // Multilingual UI support.
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('hi'), // Hindi
+        Locale('pa'), // Punjabi
+        Locale('ur'), // Urdu
+        Locale('ar'), // Arabic
+        Locale('bn'), // Bengali
+        Locale('gu'), // Gujarati
+        Locale('mr'), // Marathi
+        Locale('ne'), // Nepali
+        Locale('ta'), // Tamil
+        Locale('te'), // Telugu
+        Locale('kn'), // Kannada
+        Locale('ml'), // Malayalam
+        Locale('or'), // Odia
+        Locale('as'), // Assamese
+        Locale('zh'), // Chinese
+        Locale('ja'), // Japanese
+        Locale('ko'), // Korean
+        Locale('ru'), // Russian
+        Locale('fr'), // French
+        Locale('de'), // German
+        Locale('es'), // Spanish
+        Locale('pt'), // Portuguese
+        Locale('it'), // Italian
+        Locale('tr'), // Turkish
+      ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        if (locale == null) return supportedLocales.first;
+        for (final supported in supportedLocales) {
+          if (supported.languageCode == locale.languageCode) {
+            return supported;
+          }
+        }
+        return const Locale('en');
+      },
+
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -625,6 +670,10 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
       ),
       body: Stack(
         children: [
+          // The PDF renderer displays the fonts embedded inside the PDF.
+          // This app supports multilingual Flutter UI, but a PDF whose source
+          // font is missing/corrupt may still show boxes and must be recreated
+          // with embedded Unicode fonts.
           SfPdfViewer.file(
             File(widget.filePath),
             controller: _controller,
